@@ -15,32 +15,32 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hello-cloudbuild
+  name: mavcomplete-build
   labels:
-    app: hello-cloudbuild
+    app: mavcomplete-build
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
-      app: hello-cloudbuild
+      app: mavcomplete-build
   template:
     metadata:
       labels:
-        app: hello-cloudbuild
+        app: mavcomplete-build
     spec:
       containers:
-      - name: hello-cloudbuild
-        image: us-central1-docker.pkg.dev/GOOGLE_CLOUD_PROJECT/my-repository/hello-cloudbuild:COMMIT_SHA
+      - name: mavcomplete-build
+        image: us-central1-docker.pkg.dev/GOOGLE_CLOUD_PROJECT/my-repository/mavcomplete-build:COMMIT_SHA
         ports:
         - containerPort: 8080
 ---
 kind: Service
 apiVersion: v1
 metadata:
-  name: hello-cloudbuild
+  name: mavcomplete-build
 spec:
   selector:
-    app: hello-cloudbuild
+    app: mavcomplete-build
   ports:
   - protocol: TCP
     port: 80
