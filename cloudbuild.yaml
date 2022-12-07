@@ -28,7 +28,7 @@ steps:
   args:
   - 'build'
   - '-t'
-  - 'us-central1-docker.pkg.dev/$PROJECT_ID/my-repository/hello-cloudbuild:$SHORT_SHA'
+  - 'us-central1-docker.pkg.dev/$PROJECT_ID/my-repository/mavcomplete-build:$SHORT_SHA'
   - '.'
 
 # This step pushes the image to Artifact Registry
@@ -38,7 +38,7 @@ steps:
   id: Push
   args:
   - 'push'
-  - 'us-central1-docker.pkg.dev/$PROJECT_ID/my-repository/hello-cloudbuild:$SHORT_SHA'
+  - 'us-central1-docker.pkg.dev/$PROJECT_ID/my-repository/mavcomplete-build:$SHORT_SHA'
 # [END cloudbuild]
 
 # [START cloudbuild-trigger-cd]
@@ -71,7 +71,7 @@ steps:
   args:
   - clone
   - --recurse-submodules
-  - git@github.com:MavComplete/hello-cloudbuild-env.git
+  - git@github.com:MavComplete/env.git
   volumes:
   - name: 'ssh'
     path: /root/.ssh
@@ -83,7 +83,7 @@ steps:
   args:
   - '-c'
   - |
-    cd hello-cloudbuild-env && \
+    cd env && \
     git checkout candidate && \
     git config user.email $(gcloud auth list --filter=status:ACTIVE --format='value(account)')
 
@@ -95,7 +95,7 @@ steps:
   - '-c'
   - |
      sed "s/GOOGLE_CLOUD_PROJECT/${PROJECT_ID}/g" kubernetes.yaml.tpl | \
-     sed "s/COMMIT_SHA/${SHORT_SHA}/g" > hello-cloudbuild-env/kubernetes.yaml
+     sed "s/COMMIT_SHA/${SHORT_SHA}/g" > env/kubernetes.yaml
 
 # This step pushes the manifest back to hello-cloudbuild-env
 - name: 'gcr.io/cloud-builders/gcloud'
@@ -105,10 +105,10 @@ steps:
   - '-c'
   - |
     set -x && \
-    cd hello-cloudbuild-env && \
+    cd env && \
     git add kubernetes.yaml && \
-    git commit -m "Deploying image us-central1-docker.pkg.dev/$PROJECT_ID/my-repository/hello-cloudbuild:${SHORT_SHA}
-    Built from commit ${COMMIT_SHA} of repository hello-cloudbuild-app
+    git commit -m "Deploying image us-central1-docker.pkg.dev/$PROJECT_ID/my-repository/mavcomplete-build:${SHORT_SHA}
+    Built from commit ${COMMIT_SHA} of repository app
     Author: $(git log --format='%an <%ae>' -n 1 HEAD)" && \
     git push origin candidate
   volumes:
