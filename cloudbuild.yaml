@@ -42,6 +42,23 @@ steps:
 # [END cloudbuild]
 
 # [START cloudbuild-trigger-cd]
+
+# Access the id_github file from Secret Manager, and setup SSH
+- name: 'gcr.io/cloud-builders/git'
+  id: Access the id_github file from Secret Manager
+  secretEnv: ['SSH_KEY']
+  entrypoint: 'bash'
+  args:
+  - -c
+  - |
+    echo "$$SSH_KEY" >> /root/.ssh/id_rsa
+    chmod 400 /root/.ssh/id_rsa
+    cp known_hosts.github /root/.ssh/known_hosts
+  volumes:
+  - name: 'ssh'
+    path: /root/.ssh
+
+
 # This step clones the hello-cloudbuild-env repository
 - name: 'gcr.io/cloud-builders/gcloud'
   id: Clone env repository
@@ -49,10 +66,13 @@ steps:
   args:
   - '-c'
   - |
-    git clone https://github.com/MavComplete/hello-cloudbuild-env.git && \
+    git clone git@github.com:MavComplete/hello-cloudbuild-env.git && \
     cd hello-cloudbuild-env && \
     git checkout candidate && \
     git config user.email $(gcloud auth list --filter=status:ACTIVE --format='value(account)')
+  volumes:
+  - name: 'ssh'
+    path: /root/.ssh
 
 # This step generates the new manifest
 - name: 'gcr.io/cloud-builders/gcloud'
@@ -78,5 +98,10 @@ steps:
     Built from commit ${COMMIT_SHA} of repository hello-cloudbuild-app
     Author: $(git log --format='%an <%ae>' -n 1 HEAD)" && \
     git push origin candidate
+
+availableSecrets:
+  secretManager:
+  - versionName: projects/heroic-cedar-370702/secrets/github-deploy/versions/latest
+    env: 'SSH_KEY'
 
 # [END cloudbuild-trigger-cd]
