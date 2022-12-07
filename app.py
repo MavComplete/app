@@ -14,7 +14,7 @@
 
 # [START hello-app]
 from flask import Flask
-app = Flask('hello-cloudbuild')
+app = Flask('Welcome to MavComplete!')
 
 @app.route('/')
 def hello():

@@ -1,0 +1,36 @@
+* {
+    box-sizing: border-box;
+    }
+
+.imagescroll {
+    display: none;
+    }
+
+img {
+    vertical-align: middle;
+    }
+
+h1{
+    text-align: center;
+}
+
+.continuous_scroll {
+    max-width: 1000px;
+    position: relative;
+    margin: auto;
+  }
+
+.hallname {
+    color: white;
+    font-size: 15px;
+    padding: 4px 6px;
+    position: absolute;
+    bottom: 8px;
+    width: 100%;
+    text-align: center;
+  }
+
+.listOfHalls{
+    column-count: 2;
+}
+
