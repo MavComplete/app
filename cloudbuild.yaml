@@ -50,7 +50,7 @@ steps:
   args:
   - '-c'
   - |
-    git clone hello-cloudbuild-env && \
+    git clone MavComplete/hello-cloudbuild-env && \
     cd hello-cloudbuild-env && \
     git checkout candidate && \
     git config user.email $(gcloud auth list --filter=status:ACTIVE --format='value(account)')
