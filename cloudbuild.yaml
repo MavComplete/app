@@ -51,9 +51,16 @@ steps:
   args:
   - -c
   - |
-    echo "$$SSH_KEY" >> /root/.ssh/id_github
-    chmod 400 /root/.ssh/id_github
-    cp /home/mavcompleteapp/known_hosts.github /root/.ssh/known_hosts
+    echo "$$SSH_KEY" >> /root/.ssh/id_rsa
+    chmod 400 /root/.ssh/id_rsa
+  volumes:
+  - name: 'ssh'
+    path: /root/.ssh
+
+# Copy the known_hosts.github to build's workspace from GCS
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  id: Copy known_hosts.github from GCS
+  args: ['gsutil', 'cp', 'gs://ssh_knownhost_key/known_hosts.github', '/root/.ssh/known_hosts']
   volumes:
   - name: 'ssh'
     path: /root/.ssh
