@@ -140,27 +140,16 @@
     <br><br><br>
 
     
-    <h1>Roommate selection</h1>  
+     
       <div class = "container mt-3">
         <table class = "table">
-          <thead>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Age</th>
-            <th>Gender</th>
-            <th>Neatness</th>
-            <th>Noise during studying</th>
-            <th>Sharing</th>
-            <th>Waking up?</th>
-            <th>Study</th>
-            <th>Drinks</th>
-            <th>Smoking</th>
-            <th>Social</th>
-            <th>Outing</th>
-            <th>Attending social functions</th>
-            <th>Playing video games</th>
-        </thead>
-        <tbody id="body1"></tbody>
+          <tr>
+            <th>Prespective applicants</th>
+          
+          </tr>  
+          <tr>
+          <tbody id="body1"></tbody>
+          </tr>
         </table>
       </div>
 
@@ -294,39 +283,47 @@
 
           var tbody = document.getElementById("body1");
           var sno = 0;
-      function additemstotable(fn, ln, a, g, n, no, sh, wk, st, da, sm, so, ou, sf, vg){
-        let trow = document.createElement("trow");
+
+      function eletotable(roommate){
+        
+        
+        // sno = 0;
+        tbody.innerHTML = "";
+        for(let element = 0 ;element<roommate.length;element++)  {
+          
+          console.log(roommate[element].fname)
+          let trow = document.createElement("tbody");
         let td1 = document.createElement("td1");
         let td2 = document.createElement("td2");
-        let td3 = document.createElement("td3");
-        let td4 = document.createElement("td4");
-        let td5 = document.createElement("td5");
-        let td6 = document.createElement("td6");
-        let td7 = document.createElement("td7");
-        let td8 = document.createElement("td8");
-        let td9 = document.createElement("td9");
-        let td10 = document.createElement("td10");
-        let td11 = document.createElement("td11");
-        let td12 = document.createElement("td12");
-        let td13 = document.createElement("td13");
-        let td14 = document.createElement("td14");
-        let td15 = document.createElement("td15");
+        let td3 = document.createElement("td");
+        let td4 = document.createElement("td");
+        let td5 = document.createElement("td");
+        let td6 = document.createElement("td");
+        let td7 = document.createElement("td");
+        let td8 = document.createElement("td");
+        let td9 = document.createElement("td");
+        let td10 = document.createElement("td");
+        let td11 = document.createElement("td");
+        let td12 = document.createElement("td");
+        let td13 = document.createElement("td");
+        let td14 = document.createElement("td");
+        let td15 = document.createElement("td");
 
-        td1.innerHTML = fn;
-        td2.innerHTML = ln;
-        td3.innerHTML = a;
-        td4.innerHTML = g;
-        td5.innerHTML = n;
-        td6.innerHTML = no;
-        td7.innerHTML = sh;
-        td8.innerHTML = wk;
-        td9.innerHTML = st;
-        td10.innerHTML = da;
-        td11.innerHTML = sm;
-        td12.innerHTML = so;
-        td13.innerHTML = ou;
-        td14.innerHTML = sf;
-        td15.innerHTML = vg;
+        td1.innerHTML = "<br> Firstname<br> "+roommate[element].fname;
+        td2.innerHTML = "<br>"+roommate[element].lname;
+        td3.innerHTML = "<br>"+roommate[element].age;
+        td4.innerHTML = "<br>"+roommate[element].gender;
+        td5.innerHTML = "<br>"+roommate[element].tidy;
+        td6.innerHTML = "<br>"+roommate[element].noise;
+        td7.innerHTML = "<br>"+roommate[element].share;
+        td8.innerHTML = "<br>"+roommate[element].wake;
+        td9.innerHTML = "<br>"+roommate[element].study;
+        td10.innerHTML = "<br>"+roommate[element].alcohol;
+        td11.innerHTML = "<br>"+roommate[element].smoking;
+        td12.innerHTML = "<br>"+roommate[element].intro;
+        td13.innerHTML = "<br>"+roommate[element].partying;
+        td14.innerHTML = "<br>"+roommate[element].out;
+        td15.innerHTML = "<br>"+roommate[element].gaming;
 
         trow.appendChild(td1);
         trow.appendChild(td2);
@@ -346,16 +343,9 @@
 
         tbody.appendChild(trow);
       
-      }
-
-      function eletotable(roommate){
-        // sno = 0;
-        tbody.innerHTML = "";
-        roommate.forEach((element) => {
-        
       
-          additemstotable(element.fname, element.lname, element.age, element.gender, element.tidy, element.noise, element.share, element.wake, element.study, element.alcohol, element.smoking, element.intro, element.partying, element.out, element.gaming);
-        });
+          // additemstotable(roommate[element].fname, roommate[element].lname, roommate[element].age, roommate[element].gender, roommate[element].tidy, roommate[element].noise, roommate[element].share, roommate[element].wake, roommate[element].study, roommate[element].alcohol, roommate[element].smoking, roommate[element].intro, roommate[element].partying, element.out, element.gaming);
+        }
 
       }
       async function getalldata(){
