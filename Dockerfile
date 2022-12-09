@@ -14,9 +14,9 @@ RUN apt-get update && apt-get install -y \
     ca-certificates \
     && curl -sL https://deb.nodesource.com/setup_12.x | bash - \
     && apt-get install -y nodejs \
-    && npm install
+    && npm install \
+    && npm install firebase
 
-# Install the firebase on container startup.
-CMD ["npm", "install", "firebase"]
+CMD ["nginx", "-g", "daemon off;"]
 
 # [END dockerfile]
