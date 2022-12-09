@@ -18,5 +18,4 @@ RUN apt-get update && apt-get install -y \
     && npm install firebase
 
 CMD ["nginx", "-g", "daemon off;"]
-
 # [END dockerfile]
