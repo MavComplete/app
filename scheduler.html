@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Scheduler</title>
+    <link rel="icon" type="image/x-icon" href="https://storage.cloud.google.com/logo_mavcomplete/favicon.png">
+    <link rel="stylesheet" href="sstyle.css">
+    
+    <nav class="navbar navbar-dark bg-primary">
+        <a class="navbar-brand" href="index.html">
+          <img class="logo" src="https://storage.cloud.google.com/logo_mavcomplete/png/logo-color.png" width="80" height="60" class="d-inline-block align-top" alt="logo" loading="lazy"></a>
+        
+        <ul class = "nav_links">
+            <div>
+                <li><strong><button id="logout" >Logout</button></strong></li>
+            </div>
+        </ul>
+        </a>
+  </head>
+  <body>
+
+    <div id="container">
+      <div id="header">
+        <div id="monthDisplay"></div>
+        <div>
+          <button id="backButton">Back</button>
+          <button id="nextButton">Next</button>
+        </div>
+      </div>
+
+      <div id="weekdays">
+        <div>Sunday</div>
+        <div>Monday</div>
+        <div>Tuesday</div>
+        <div>Wednesday</div>
+        <div>Thursday</div>
+        <div>Friday</div>
+        <div>Saturday</div>
+      </div>
+
+      <div id="calendar"></div>
+    </div>
+
+    <div id="newEventModal">
+      <h2>Class Info</h2>
+
+      <input id="eventTitleInput" placeholder="Enter Course Name " />
+
+      <input id="eventTitleInput2" placeholder="Enter Time " />
+
+      <input id="eventTitleInput3" placeholder="Enter Classroom location " />
+      <br></br>
+      <button id="saveButton">Save</button>
+      <button id="cancelButton">Cancel</button>
+    </div>
+
+    <div id="deleteEventModal">
+      <h2>Class info</h2>
+
+      <p id="eventText"></p>
+
+      <p id="eventText2"></p>
+
+      <p id="eventText3"></p>
+      
+      
+      <button id="deleteButton">Delete</button>
+      <button id="closeButton">Close</button>
+    </div>
+
+    <div id="modalBackDrop"></div>
+    <script src="https://www.gstatic.com/firebasejs/9.13.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.13.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.13.0/firebase-auth-compat.js"></script>
+
+    <!-- <script src="./scheduler.mjs"></script> -->
+
+
+    <script type = "module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-analytics.js";
+import { getFirestore, collection, addDoc , doc, setDoc ,deleteDoc ,getDoc,getDocs} from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCwNYjaR8ab1W9rwsGVGGGqc3tArqmTvjc",
+  authDomain: "heroic-cedar-370702.firebaseapp.com",
+  databaseURL: "https://heroic-cedar-370702-default-rtdb.firebaseio.com",
+  projectId: "heroic-cedar-370702",
+  storageBucket: "heroic-cedar-370702.appspot.com",
+  messagingSenderId: "272747947004",
+  appId: "1:272747947004:web:65b0f7226ac6693da04879",
+  measurementId: "G-7ES4PEY8YC"
+};
+
+const emailObject2 = sessionStorage.getItem('loggedEmail')
+console.log(emailObject2)
+let userId = emailObject2
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore();
+
+var ref = collection(db, "mavcomplete-fs");
+
+
+async function openModal(date){
+
+  clicked = date;
+
+  const eventForDay = events.find(e => e.date === clicked);
+
+  if (eventForDay) {
+ 
+    document.getElementById('eventText').innerText = eventForDay.title;
+    document.getElementById('eventText2').innerText = eventForDay.title2;
+    document.getElementById('eventText3').innerText = eventForDay.title3;
+
+    deleteEventModal.style.display = 'block';
+  } else {
+    newEventModal.style.display = 'block';
+  }
+
+  backDrop.style.display = 'block';
+
+}
+async function retriveData(){
+
+
+  const querysnapshot = await getDocs(collection(db, "mavcomplete-fs", userId, "events"));
+
+        var eventCloud = [];
+        querysnapshot.forEach((doc) => {
+          eventCloud.push(doc.data());
+        });
+        console.log(eventCloud);
+        events.push(...eventCloud);
+        //eletotable(roommate);
+}
+
+
+
+let nav = 0;
+let clicked = null;
+let events = localStorage.getItem('events') ? JSON.parse(localStorage.getItem('events')) : [];
+
+
+
+const calendar = document.getElementById('calendar');
+const newEventModal = document.getElementById('newEventModal');
+const newEventModal2 = document.getElementById('newEventModal');
+const newEventModal3 = document.getElementById('newEventModal');
+const deleteEventModal = document.getElementById('deleteEventModal');
+const backDrop = document.getElementById('modalBackDrop');
+const eventTitleInput = document.getElementById('eventTitleInput');
+const eventTitleInput2 = document.getElementById('eventTitleInput2');
+const eventTitleInput3 = document.getElementById('eventTitleInput3');
+const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+
+function load() {
+  const dt = new Date();
+
+  if (nav !== 0) {
+    dt.setMonth(new Date().getMonth() + nav);
+  }
+
+  const day = dt.getDate();
+  const month = dt.getMonth();
+  const year = dt.getFullYear();
+
+  const firstDayOfMonth = new Date(year, month, 1);
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  
+  const dateString = firstDayOfMonth.toLocaleDateString('en-us', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+  });
+  const paddingDays = weekdays.indexOf(dateString.split(', ')[0]);
+
+  document.getElementById('monthDisplay').innerText = 
+    `${dt.toLocaleDateString('en-us', { month: 'long' })} ${year}`;
+
+  calendar.innerHTML = '';
+
+  for(let i = 1; i <= paddingDays + daysInMonth; i++) {
+    const daySquare = document.createElement('div');
+    daySquare.classList.add('day');
+
+    const dayString = `${month + 1}/${i - paddingDays}/${year}`;
+
+    if (i > paddingDays) {
+      daySquare.innerText = i - paddingDays;
+      const eventForDay = events.find(e => e.date === dayString);
+
+      if (i - paddingDays === day && nav === 0) {
+        daySquare.id = 'currentDay';
+      }
+
+      if (eventForDay) {
+        const eventDiv = document.createElement('div');
+        eventDiv.classList.add('event');
+        eventDiv.innerText = eventForDay.title;
+        daySquare.appendChild(eventDiv);
+      }
+
+      daySquare.addEventListener('click', () => openModal(dayString));
+    } else {
+      daySquare.classList.add('padding');
+    }
+
+    calendar.appendChild(daySquare);    
+  }
+}
+
+function closeModal() {
+  eventTitleInput.classList.remove('error');
+  eventTitleInput2.classList.remove('error');
+  eventTitleInput3.classList.remove('error');
+  newEventModal.style.display = 'none';
+  newEventModal2.style.display = 'none';
+  newEventModal3.style.display = 'none';
+  deleteEventModal.style.display = 'none';
+  backDrop.style.display = 'none';
+  eventTitleInput.value = '';
+  eventTitleInput2.value = '';
+  eventTitleInput3.value = '';
+  clicked = null;
+  load();
+}
+
+//Working
+async function saveEvent() {
+  if (eventTitleInput.value) {
+    eventTitleInput.classList.remove('error');
+    console.log(clicked);
+    let date1 = clicked
+
+    for (var i = 0; i < clicked.length; i++) {
+      clicked = clicked.replace(/[/]/g, "");
+    }
+    
+    //key = clicked;
+    await setDoc(doc(db, "mavcomplete-fs", userId, "events", clicked), {
+      date: date1,
+      title: eventTitleInput.value,
+      title2: eventTitleInput2.value,
+      title3: eventTitleInput3.value
+    });
+
+    localStorage.setItem('events', JSON.stringify(events));
+    closeModal();
+  } else {
+    eventTitleInput.classList.add('error');
+
+} 
+}
+
+
+async function deleteEvent() {
+  events = events.filter(e => e.date !== clicked);
+  //docRef.doc(`${events}`).delete();
+  localStorage.setItem('events', JSON.stringify(events));
+  for (var i = 0; i < clicked.length; i++) {
+    clicked = clicked.replace(/[/]/g, "");
+  }
+  
+  //key = clicked;
+  console.log("Delete Event");
+  //console.log(key);
+  await deleteDoc(doc(db, "mavcomplete-fs", userId, "events", clicked));
+  closeModal();
+
+}
+
+function initButtons() {
+  document.getElementById('nextButton').addEventListener('click', () => {
+    nav++;
+    load();
+  });
+
+  document.getElementById('backButton').addEventListener('click', () => {
+    nav--;
+    load();
+  });
+
+  document.getElementById('saveButton').addEventListener('click', saveEvent);
+  document.getElementById('cancelButton').addEventListener('click', closeModal);
+  document.getElementById('deleteButton').addEventListener('click', deleteEvent);
+  document.getElementById('closeButton').addEventListener('click', closeModal);
+}
+
+initButtons();
+load();
+retriveData();
+
+</script>
+  </body>
+  
+</html>

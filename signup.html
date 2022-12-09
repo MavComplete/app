@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up to Mavcomplete</title>
+    <link rel="icon" type="image/x-icon" href="https://storage.cloud.google.com/logo_mavcomplete/favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  
+
+
+    <!-- <link rel="stylesheet" href="style.css"> -->
+    <nav class="navbar navbar-dark bg-secondary">
+        <a class="navbar-brand" href="index.html">
+          <img class="logo" src="https://storage.cloud.google.com/logo_mavcomplete/png/logo-color.png" width="80" height="60" class="d-inline-block align-top" alt="logo" loading="lazy"></a>      
+        <ul class = "nav_links">
+            <div>
+                <li><strong><a href="login.html">Login</a></strong></li>
+                <li><strong><a href="signup.html">Signup</a></strong></li>
+            </div>
+        </ul>
+        </a>
+    </nav>
+</head>
+<body>
+    <div class="container">
+        <form name="signup" id="signup1" method="post" style="border:1px solid #ccc">
+        
+          <h1>Sign Up</h1>
+          <p>Please fill in this form to create an account.</p>
+          <hr>
+          <label for="fname"><b>First Name</b></label>
+          <input type="text" placeholder="First Name" name="fname" id="fname" required><br>
+
+          <label for="lname"><b>Last Name</b></label>
+          <input type="text" placeholder="Last Name" name="lname" id="lname" required><br>
+
+          <label for="email"><b>Email</b></label>
+          <input type="text" placeholder="Enter Email" name="email" id="email" required><br>
+
+      
+          <label for="psw"><b>Password</b></label>
+          <input type="password" placeholder="Enter Password" name="psw" id="password" required><br>
+        
+          <div class="clearfix">
+            <button type="button" class="signupbtn" id = "signup" name="signup">Sign Up</button>
+          </div>
+          </div>
+        </form>
+      </div>  
+    
+</body>
+
+<script type = "module">
+
+let token = localStorage.getItem('auth-token');
+  // alert(token);
+
+  if(token !== "") {
+    window.location.href = "./userpage.html";
+  }
+
+
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-analytics.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-auth.js";
+
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  var  firebaseConfig = {
+    apiKey: "AIzaSyCwNYjaR8ab1W9rwsGVGGGqc3tArqmTvjc",
+    authDomain: "heroic-cedar-370702.firebaseapp.com",
+    projectId: "heroic-cedar-370702",
+    storageBucket: "heroic-cedar-370702.appspot.com",
+    messagingSenderId: "272747947004",
+    appId: "1:272747947004:web:3a8a1a6263a93554a04879",
+    measurementId: "G-PHZNN4TRB6"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+  const auth = getAuth();
+
+  // console.log(app)
+
+  document.getElementById("signup").addEventListener("click", function() {
+		  var email =  document.getElementById("email").value;
+		  var password = document.getElementById("password").value;
+		  //For new registration
+		  createUserWithEmailAndPassword(auth, email, password)
+		  .then((userCredential) => {
+		    // Signed in 
+		    const user = userCredential.user;
+		    console.log(user);
+		    alert("Registration successfully!!");
+        window.location.href = "login.html";
+		    // ...
+		  })
+		  .catch((error) => {
+		    const errorCode = error.code;
+		    const errorMessage = error.message;
+		    // ..
+		    console.log(errorMessage);
+		    alert(error);
+		  });		  		  
+	  });
+
+    // logout 
+    document.getElementById("logout").addEventListener("click", function() {
+		  signOut(auth).then(() => {
+			  // Sign-out successful.
+			  console.log('Sign-out successful.');
+			  alert('Sign-out successful.');
+			  document.getElementById('logout').style.display = 'none';
+			}).catch((error) => {
+			  // An error happened.
+			  console.log('An error happened.');
+			});		  		  
+	  });
+
+</script>
+
+
+</html>

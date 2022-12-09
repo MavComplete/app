@@ -5,7 +5,7 @@ metadata:
   labels:
     app: mavcomplete-build
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: mavcomplete-build
@@ -14,11 +14,21 @@ spec:
       labels:
         app: mavcomplete-build
     spec:
+      volumes:
+      - name: firestore-key-volume
+        secret:
+          secretName: firestore
       containers:
       - name: mavcomplete-build
-        image: us-central1-docker.pkg.dev/GOOGLE_CLOUD_PROJECT/my-repository/mavcomplete-build:COMMIT_SHA
+        image: us-central1-docker.pkg.dev/heroic-cedar-370702/my-repository/mavcomplete-build:a47a1b2
         ports:
         - containerPort: 8080
+        volumeMounts:
+        - name: firestore-key-volume
+          mountPath: /var/secrets/google
+        env:
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: /var/secrets/google/heroic-cedar-370702-e5ded621956a.json
 ---
 kind: Service
 apiVersion: v1

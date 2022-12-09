@@ -1,12 +1,5 @@
 # [START cloudbuild]
 steps:
-# This step runs the unit tests on the app
-- name: 'python:3.7-slim'
-  id: Test
-  entrypoint: /bin/sh
-  args:
-  - -c
-  - 'pip install flask && python test_app.py -v'
 
 # This step builds the container image.
 - name: 'gcr.io/cloud-builders/docker'
@@ -51,7 +44,7 @@ steps:
   - name: 'ssh'
     path: /root/.ssh
 
-# Clone the hello-cloudbuild-env repository
+# Clone the mavcomplete-env repository
 - name: 'gcr.io/cloud-builders/git'
   id: Clone env repository
   args:
@@ -62,7 +55,7 @@ steps:
   - name: 'ssh'
     path: /root/.ssh
 
-# This step changes to candidate branch of the hello-cloudbuild-env repository
+# This step changes to candidate branch of the mavcomplete-env repository
 - name: 'gcr.io/cloud-builders/git'
   id: Change to candidate branch
   entrypoint: /bin/sh
@@ -83,7 +76,7 @@ steps:
      sed "s/GOOGLE_CLOUD_PROJECT/${PROJECT_ID}/g" kubernetes.yaml.tpl | \
      sed "s/COMMIT_SHA/${SHORT_SHA}/g" > env/kubernetes.yaml
 
-# This step pushes the manifest back to hello-cloudbuild-env
+# This step pushes the manifest back to mavcomplete-env
 - name: 'gcr.io/cloud-builders/gcloud'
   id: Push manifest
   entrypoint: /bin/sh
