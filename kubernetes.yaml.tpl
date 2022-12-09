@@ -20,7 +20,7 @@ spec:
           secretName: firestore
       containers:
       - name: mavcomplete-build
-        image: us-central1-docker.pkg.dev/heroic-cedar-370702/my-repository/mavcomplete-build:a47a1b2
+        image: us-central1-docker.pkg.dev/heroic-cedar-370702/my-repository/mavcomplete-build:COMMIT_SHA
         ports:
         - containerPort: 8080
         volumeMounts:
